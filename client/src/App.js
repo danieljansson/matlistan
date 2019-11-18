@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
 import { getListDb } from './listRepository';
-import AddArticle from './addArticle';
-import List from './list';
+import AddArticle from './Components/AddArticle';
+import List from './Components/List';
 
 class App extends Component {
   constructor(props) {
@@ -14,6 +14,7 @@ class App extends Component {
   }
   componentDidMount() {
     const parsed = queryString.parse(window.location.search);
+    console.log('parsed', parsed, window.location.search, 'asdf');
     this.setState({ listId: parsed.listId });
     this.getList(parsed.listId);
   }

@@ -28,6 +28,7 @@ export default class List extends Component {
     var to = Number(this.over.dataset.id);
 
     if (from < to) to--;
+
     articles.splice(to, 0, articles.splice(from, 1)[0]);
     const updatedArticleId = articles[to].id;
     const sortOrderBefore = articles[to].sortOrder;
@@ -63,7 +64,7 @@ export default class List extends Component {
           onDragEnd={this.dragEnd}
           onDragStart={this.dragStart}
         >
-          {item.name}
+          {item}
         </li>
       );
     });

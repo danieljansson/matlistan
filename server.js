@@ -26,6 +26,7 @@ const articles = [
   { id: 18, name: 'tacokrydda', sortOrder: 18 },
   { id: 19, name: 'tortilla', sortOrder: 19 },
   { id: 20, name: 'majs', sortOrder: 20 },
+  { id: 20, name: 'pepparrot', sortOrder: 21 },
 ];
 
 const lists = [
@@ -54,7 +55,9 @@ app.get('/api/articleByName/:name?', (req, res) => {
 
 app.get('/api/articles/', (req, res) => {
   res.send({
-    articles: articles,
+    articles: articles.map(article => {
+      return article.name;
+    }),
   });
 });
 

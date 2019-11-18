@@ -4,7 +4,7 @@ import {
   AddArticleDb,
   getArticlesDb,
   getListDb,
-} from './listRepository';
+} from '../listRepository';
 import Autocomplete from './Autocomplete';
 
 class AddArticle extends Component {
@@ -18,43 +18,25 @@ class AddArticle extends Component {
   }
 
   componentDidMount() {
-    this.getArticlesNotInList();
+    this.getArticles();
   }
 
-  IdExistsInList = (id, list) => {
-    return list.some(a => a.id === id);
-  };
-
-  getArticlesNotInList = (articles, list) => {
-    return articles.filter(a => {
-      return !this.IdExistsInList(a.id, list);
-    });
-  };
-
-  getArticlesNotInList = async () => {
+  getArticles = async () => {
     getArticlesDb()
       .then(res => {
-        const articles = res.articles;
-        getListDb(this.props.listId)
-          .then(res => {
-            const filteredArticles = articles.filter(a => {
-              return !this.IdExistsInList(a.id, res.express.articles);
-            });
-            this.setState({ allArticles: filteredArticles });
-          })
-          .catch(err => console.log(err));
+        this.setState({ allArticles: res.articles });
       })
       .catch(err => console.log(err));
   };
 
   selectArticle = async article => {
-    this.getArticlesNotInList();
+    this.getArticles();
     this.setState({ articleToAdd: article });
   };
 
   addToList = async event => {
     event.preventDefault();
-    if (this.state.articleToAdd.id) {
+    if (this.state.articleToAdd) {
       addToListDb(this.state.articleToAdd.id, this.props.listId)
         .then(res => {
           this.setState({ articleToAdd: '' });
@@ -83,10 +65,6 @@ class AddArticle extends Component {
     return (
       <div>
         <form onSubmit={this.addToList}>
-          {/* <input
-            onChange={e => this.getArticleByName(e)}
-            value={this.state.articleToAdd}
-          /> */}
           <Autocomplete
             suggestions={this.state.allArticles}
             selectArticle={this.selectArticle}
