@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
-import { getListDb } from './listRepository';
+import { getListDb } from './listService';
 import AddArticle from './Components/AddArticle';
 import List from './Components/List';
 
@@ -21,7 +21,9 @@ class App extends Component {
   getList = listId => {
     getListDb(listId)
       .then(res => {
+        console.log('res', res.express.articles);
         this.setState({ listArticles: res.express.articles });
+
         console.log('articles', this.state.listArticles);
       })
       .catch(err => console.log(err));
@@ -65,7 +67,9 @@ class App extends Component {
       <div className="App">
         <AddArticle listId={listId} getList={this.getList} />
         <List
-          articles={listArticles.sort((a, b) => a.sortOrder - b.sortOrder)}
+          //articles={[].map(article => article)}
+          articles={listArticles.map(article => article)}
+          //            .sort((a, b) => a.sortOrder - b.sortOrder)}
           updateListOrder={this.updateListOrder}
         />
       </div>

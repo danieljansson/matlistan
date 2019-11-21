@@ -19,7 +19,7 @@ export async function getArticlesDb() {
   return body;
 }
 
-export async function AddArticleDb(newArticleName) {
+export async function addArticleDb(newArticleName) {
   const response = await fetch('/api/article', {
     method: 'POST',
     headers: {
@@ -34,14 +34,14 @@ export async function AddArticleDb(newArticleName) {
   return body;
 }
 
-export async function addToListDb(selectedArticleId, listId) {
+export async function addToListDb(selectedArticleName, listId) {
   const response = await fetch(`/api/list/${listId}/article`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      articleId: selectedArticleId,
+      article: selectedArticleName,
       listId: listId,
     }),
   });

@@ -93,7 +93,7 @@ app.post('/api/article', (req, res) => {
 
 app.post('/api/list/:listId/article', (req, res) => {
   const { listId } = req.params;
-  const article = getArticle(req.body.articleId);
+  const article = getArticleByName(req.body.article);
   list = getList(parseInt(listId));
 
   if (list.articles.filter(a => a.id === article.id).length === 0) {
@@ -103,9 +103,15 @@ app.post('/api/list/:listId/article', (req, res) => {
   res.send({ listId: req.body.listId });
 });
 
-const getArticle = articleId => {
+const getArticleById = articleId => {
   const article = articles.find(article => {
     return article.id === articleId;
+  });
+  return article;
+};
+const getArticleByName = articleName => {
+  const article = articles.find(article => {
+    return article.name === articleName;
   });
   return article;
 };

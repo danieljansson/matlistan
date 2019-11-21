@@ -59,12 +59,12 @@ export default class List extends Component {
       return (
         <li
           data-id={i}
-          key={i}
+          key={item.id}
           draggable="true"
           onDragEnd={this.dragEnd}
           onDragStart={this.dragStart}
         >
-          {item}
+          {item.name}
         </li>
       );
     });

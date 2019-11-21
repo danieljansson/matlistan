@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import './autocomplete.css';
 import { DELETE, BACKSPACE, ENTER, UP, DOWN } from './../utils/keycodeMapper';
 
@@ -24,17 +23,40 @@ class Autocomplete extends Component {
     };
   }
 
+  componentDidMount() {
+    this.inputRef.current.focus();
+  }
+
   // Event fired when the input value is changed
   onChange = e => {
     const { suggestions } = this.props;
-    let userInput = e.currentTarget.value;
+    const { userInput } = this.state;
+
+    let userInsertedInput = e.currentTarget.value;
+    if (userInsertedInput.length < 1) {
+      this.setState({
+        activeSuggestion: -1,
+        filteredSuggestions: [],
+        showSuggestions: false,
+        userInput: userInsertedInput,
+      });
+      return;
+    }
+
+    if (userInput.length - 1 === userInsertedInput.length) {
+      this.setState({
+        userInput: userInsertedInput,
+      });
+      return;
+    }
+
     let firstSuggestion = '';
 
-    console.log('onchange', userInput);
+    console.log('onchange', userInsertedInput);
 
     // Filter our suggestions that don't contain the user's input
     const filteredSuggestions = suggestions.filter(suggestion =>
-      suggestion.toLowerCase().startsWith(userInput.toLowerCase())
+      suggestion.toLowerCase().startsWith(userInsertedInput.toLowerCase())
     );
     if (filteredSuggestions.length > 0) {
       firstSuggestion = filteredSuggestions[0];
@@ -50,7 +72,7 @@ class Autocomplete extends Component {
         filteredSuggestions,
         showSuggestions: true,
         userInput: firstSuggestion,
-        startPos: userInput.length,
+        startPos: userInsertedInput.length,
         endPos: firstSuggestion.length,
       },
       () => {
@@ -67,10 +89,6 @@ class Autocomplete extends Component {
   onClick = e => {
     const { selectArticle } = this.props;
     // Update the user input and reset the rest of the state
-    console.log('e', e.currentTarget.innerText);
-    const article = this.state.filteredSuggestions.find(
-      a => a.name === e.currentTarget.innerText
-    );
 
     this.setState({
       activeSuggestion: 0,
@@ -79,7 +97,7 @@ class Autocomplete extends Component {
       userInput: e.currentTarget.innerText,
     });
 
-    selectArticle(article);
+    selectArticle(e.currentTarget.innerText);
   };
 
   // Event fired when the user presses a key down
@@ -89,20 +107,21 @@ class Autocomplete extends Component {
       filteredSuggestions,
       userInput,
       startPos,
-      endPos,
     } = this.state;
     const { selectArticle } = this.props;
 
     if (e.keyCode === DELETE || e.keyCode === BACKSPACE) {
-      console.log(e.currentTarget.value);
-      const userInputShort = userInput.substring(0, startPos);
-      console.log('userInput', userInputShort);
-      this.setState({
-        activeSuggestion: 0,
-        showSuggestions: false,
-        userInput: userInputShort,
-      });
-      e.preventDefault();
+      if (startPos > 0) {
+        const userInputShort = userInput.substring(0, startPos);
+
+        this.setState({
+          activeSuggestion: -1,
+          showSuggestions: true,
+          userInput: userInputShort,
+          startPos: 0,
+        });
+        e.preventDefault();
+      }
     }
     // User pressed the enter key, update the input and close the
     // suggestions
@@ -112,9 +131,8 @@ class Autocomplete extends Component {
         showSuggestions: false,
         userInput: '',
       });
-      const article = filteredSuggestions[activeSuggestion];
 
-      selectArticle(article);
+      selectArticle(userInput);
     }
     // User pressed the up arrow, decrement the index
     else if (e.keyCode === UP) {
@@ -154,6 +172,8 @@ class Autocomplete extends Component {
         suggestionsListComponent = (
           <ul className="suggestions">
             {filteredSuggestions.map((suggestion, index) => {
+              if (index === 0) return;
+
               let className;
 
               // Flag the active suggestion with a class
@@ -162,12 +182,7 @@ class Autocomplete extends Component {
               }
 
               return (
-                <li
-                  className={className}
-                  id={suggestion.id}
-                  key={suggestion.id}
-                  onClick={onClick}
-                >
+                <li className={className} key={index} onClick={onClick}>
                   {suggestion}
                 </li>
               );

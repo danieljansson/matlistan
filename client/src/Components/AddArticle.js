@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
   addToListDb,
-  AddArticleDb,
+  addArticleDb,
   getArticlesDb,
   getListDb,
-} from '../listRepository';
+} from './../listService';
 import Autocomplete from './Autocomplete';
 
 class AddArticle extends Component {
@@ -37,7 +37,7 @@ class AddArticle extends Component {
   addToList = async event => {
     event.preventDefault();
     if (this.state.articleToAdd) {
-      addToListDb(this.state.articleToAdd.id, this.props.listId)
+      addToListDb(this.state.articleToAdd, this.props.listId)
         .then(res => {
           this.setState({ articleToAdd: '' });
           this.setState({ selectedArticleId: '' });
@@ -46,7 +46,7 @@ class AddArticle extends Component {
         })
         .catch(err => console.log(err));
     } else {
-      AddArticleDb(this.state.articleToAdd.name)
+      addArticleDb(this.state.articleToAdd.name)
         .then(res => {
           addToListDb(res.id, this.props.listId)
             .then(res => {
