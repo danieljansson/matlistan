@@ -68,6 +68,11 @@ export default class List extends Component {
         </li>
       );
     });
-    return <ul onDragOver={this.dragOver}>{listItems}</ul>;
+    return (
+      <div className="shoppinglist">
+        {' '}
+        <ul onDragOver={this.dragOver}>{listItems}</ul>
+      </div>
+    );
   }
 }

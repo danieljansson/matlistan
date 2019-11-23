@@ -93,8 +93,22 @@ app.post('/api/article', (req, res) => {
 
 app.post('/api/list/:listId/article', (req, res) => {
   const { listId } = req.params;
-  const article = getArticleByName(req.body.article);
+  let article = getArticleByName(req.body.article);
   list = getList(parseInt(listId));
+
+  if (!article) {
+    const articleWithmaxId = articles.sort((a, b) => b.id - a.id)[0];
+    const articleWithmaxSortOrder = articles.sort(
+      (a, b) => b.sortOrder - a.sortOrder
+    )[0];
+
+    article = {
+      id: articleWithmaxId.id + 1,
+      name: req.body.article,
+      sortOrder: articleWithmaxSortOrder.sortOrder + 1,
+    };
+    articles.push(article);
+  }
 
   if (list.articles.filter(a => a.id === article.id).length === 0) {
     list.articles.push(article);

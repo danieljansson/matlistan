@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  addToListDb,
-  addArticleDb,
-  getArticlesDb,
-  getListDb,
-} from './../listService';
+import { addToListDb, addArticleDb, getArticlesDb } from './../listService';
 import Autocomplete from './Autocomplete';
 
 class AddArticle extends Component {
@@ -63,7 +58,7 @@ class AddArticle extends Component {
 
   render() {
     return (
-      <div>
+      <div className="autocomplete">
         <form onSubmit={this.addToList}>
           <Autocomplete
             suggestions={this.state.allArticles}

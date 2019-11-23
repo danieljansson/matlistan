@@ -52,7 +52,8 @@ class Autocomplete extends Component {
 
     let firstSuggestion = '';
 
-    console.log('onchange', userInsertedInput);
+    //    if (userInsertedInput)
+    console.log('onchange', userInsertedInput, userInput);
 
     // Filter our suggestions that don't contain the user's input
     const filteredSuggestions = suggestions.filter(suggestion =>

@@ -3,13 +3,13 @@ h1 {
   padding-left: 5px;
 }
 
-ul {
+.list ul {
   list-style: none;
   margin: 0;
   padding: 0;
   box-shadow: 1px 3px 8px #888;
 }
-li {
+.lisli {
   padding: 10px 15px;
   background: #eee;
   &:hover {

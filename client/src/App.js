@@ -67,9 +67,7 @@ class App extends Component {
       <div className="App">
         <AddArticle listId={listId} getList={this.getList} />
         <List
-          //articles={[].map(article => article)}
-          articles={listArticles.map(article => article)}
-          //            .sort((a, b) => a.sortOrder - b.sortOrder)}
+          articles={listArticles.sort((a, b) => a.sortOrder - b.sortOrder)}
           updateListOrder={this.updateListOrder}
         />
       </div>
