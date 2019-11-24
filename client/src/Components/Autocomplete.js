@@ -33,6 +33,9 @@ class Autocomplete extends Component {
     const { userInput } = this.state;
 
     let userInsertedInput = e.currentTarget.value;
+
+    console.log('userInsertedInput', userInsertedInput);
+
     if (userInsertedInput.length < 1) {
       this.setState({
         activeSuggestion: -1,
@@ -43,28 +46,38 @@ class Autocomplete extends Component {
       return;
     }
 
-    if (userInput.length - 1 === userInsertedInput.length) {
-      this.setState({
-        userInput: userInsertedInput,
-      });
-      return;
-    }
+    // if (userInput.length - 1 === userInsertedInput.length) {
+    //   this.setState({
+    //     userInput: userInsertedInput,
+    //   });
+    //   return;
+    // }
 
     let firstSuggestion = '';
 
-    //    if (userInsertedInput)
-    console.log('onchange', userInsertedInput, userInput);
-
     // Filter our suggestions that don't contain the user's input
-    const filteredSuggestions = suggestions.filter(suggestion =>
+    let filteredSuggestions = suggestions.filter(suggestion =>
       suggestion.toLowerCase().startsWith(userInsertedInput.toLowerCase())
     );
+    console.log(filteredSuggestions);
+    //.sort((a, b) => a.name.localeCompare(b.name));
+
     if (filteredSuggestions.length > 0) {
+      // filteredSuggestions = filteredSuggestions.sort((a, b) =>
+      //   a.name.localeCompare(b.name)
+      // );
+
       firstSuggestion = filteredSuggestions[0];
     } else {
-      firstSuggestion = '';
+      firstSuggestion = userInsertedInput;
     }
 
+    console.log(firstSuggestion, userInsertedInput);
+    let startPos = 0;
+    if (firstSuggestion !== userInsertedInput) {
+      startPos = userInsertedInput.length;
+    }
+    console.log('startpos', startPos);
     // Update the user input and filtered suggestions, reset the active
     // suggestion and make sure the suggestions are shown
     this.setState(
@@ -73,7 +86,7 @@ class Autocomplete extends Component {
         filteredSuggestions,
         showSuggestions: true,
         userInput: firstSuggestion,
-        startPos: userInsertedInput.length,
+        startPos: startPos, // userInsertedInput.length,
         endPos: firstSuggestion.length,
       },
       () => {
@@ -83,7 +96,9 @@ class Autocomplete extends Component {
   };
 
   selectText = (startPos, endPos) => {
-    this.inputRef.current.setSelectionRange(startPos, endPos);
+    if (startPos > 0) {
+      this.inputRef.current.setSelectionRange(startPos, endPos);
+    }
   };
 
   // Event fired when the user clicks on a suggestion
@@ -112,6 +127,7 @@ class Autocomplete extends Component {
     const { selectArticle } = this.props;
 
     if (e.keyCode === DELETE || e.keyCode === BACKSPACE) {
+      console.log('e.currentTarget.innerText', e.currentTarget);
       if (startPos > 0) {
         const userInputShort = userInput.substring(0, startPos);
 
@@ -190,13 +206,14 @@ class Autocomplete extends Component {
             })}
           </ul>
         );
-      } else {
-        suggestionsListComponent = (
-          <div className="no-suggestions">
-            <em>No suggestions, you're on your own!</em>
-          </div>
-        );
       }
+      // else {
+      //   suggestionsListComponent = (
+      //     <div className="no-suggestions">
+      //       <em>No suggestions, you're on your own!</em>
+      //     </div>
+      //   );
+      // }
     }
 
     return (

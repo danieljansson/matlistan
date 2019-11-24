@@ -14,17 +14,13 @@ class App extends Component {
   }
   componentDidMount() {
     const parsed = queryString.parse(window.location.search);
-    console.log('parsed', parsed, window.location.search, 'asdf');
     this.setState({ listId: parsed.listId });
     this.getList(parsed.listId);
   }
   getList = listId => {
     getListDb(listId)
       .then(res => {
-        console.log('res', res.express.articles);
         this.setState({ listArticles: res.express.articles });
-
-        console.log('articles', this.state.listArticles);
       })
       .catch(err => console.log(err));
   };
@@ -56,7 +52,6 @@ class App extends Component {
       }
       return a;
     });
-    console.log('listarticle', this.state.listArticles);
     this.setState({ listArticles: articles });
   };
 

@@ -26,7 +26,7 @@ const articles = [
   { id: 18, name: 'tacokrydda', sortOrder: 18 },
   { id: 19, name: 'tortilla', sortOrder: 19 },
   { id: 20, name: 'majs', sortOrder: 20 },
-  { id: 20, name: 'pepparrot', sortOrder: 21 },
+  { id: 21, name: 'pepparrot', sortOrder: 21 },
 ];
 
 const lists = [
