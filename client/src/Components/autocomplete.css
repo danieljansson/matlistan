@@ -1,5 +1,5 @@
 input {
-  border: 1px solid #999;
+  border: 1px solid #aaa;
   padding: 0.5rem;
   width: 300px;
 }
@@ -10,7 +10,7 @@ input {
 }
 
 .suggestions {
-  border: 1px solid #999;
+  border: 1px solid #aaa;
   border-top-width: 0;
   list-style: none;
   margin-top: 0;
@@ -28,12 +28,10 @@ input {
 
 .suggestion-active,
 .suggestions li:hover {
-  background-color: #4633f7;
-  color: #fae042;
+  background-color: #ddd;
   cursor: pointer;
-  font-weight: 700;
 }
 
 .suggestions li:not(:last-of-type) {
-  border-bottom: 1px solid #999;
+  /*  border-bottom: 1px solid #999;*/
 }

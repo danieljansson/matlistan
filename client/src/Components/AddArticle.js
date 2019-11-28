@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { addToListDb, addArticleDb, getArticlesDb } from './../listService';
+import { addToListDb, getArticlesDb } from './../listService';
 import Autocomplete from './Autocomplete';
 
 class AddArticle extends Component {
@@ -38,19 +38,6 @@ class AddArticle extends Component {
           this.setState({ selectedArticleId: '' });
 
           this.props.getList(res.listId);
-        })
-        .catch(err => console.log(err));
-    } else {
-      addArticleDb(this.state.articleToAdd.name)
-        .then(res => {
-          addToListDb(res.id, this.props.listId)
-            .then(res => {
-              this.setState({ articleToAdd: '' });
-              this.setState({ selectedArticleId: '' });
-
-              this.props.getList(res.listId);
-            })
-            .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
     }
