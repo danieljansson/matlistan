@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
-import { getListDb } from './listRepository';
-import AddArticle from './addArticle';
-import List from './list';
+import { getListDb, deleteFromList } from './listService';
+import AddArticle from './Components/AddArticle';
+import List from './Components/List';
 
 class App extends Component {
   constructor(props) {
@@ -13,15 +13,23 @@ class App extends Component {
     };
   }
   componentDidMount() {
-    const parsed = queryString.parse(window.location.search);
-    this.setState({ listId: parsed.listId });
-    this.getList(parsed.listId);
+    const { listId } = queryString.parse(window.location.search);
+    this.setState({ listId: listId });
+    this.getList(listId);
   }
   getList = listId => {
     getListDb(listId)
       .then(res => {
         this.setState({ listArticles: res.express.articles });
-        console.log('articles', this.state.listArticles);
+      })
+      .catch(err => console.log(err));
+  };
+
+  deleteArticleFromList = articleid => {
+    const { listId } = this.state;
+    deleteFromList(articleid, listId)
+      .then(res => {
+        this.getList(res.listId);
       })
       .catch(err => console.log(err));
   };
@@ -53,7 +61,6 @@ class App extends Component {
       }
       return a;
     });
-    console.log('listarticle', this.state.listArticles);
     this.setState({ listArticles: articles });
   };
 
@@ -66,6 +73,7 @@ class App extends Component {
         <List
           articles={listArticles.sort((a, b) => a.sortOrder - b.sortOrder)}
           updateListOrder={this.updateListOrder}
+          deleteArticleFromList={this.deleteArticleFromList}
         />
       </div>
     );

@@ -26,6 +26,7 @@ const articles = [
   { id: 18, name: 'tacokrydda', sortOrder: 18 },
   { id: 19, name: 'tortilla', sortOrder: 19 },
   { id: 20, name: 'majs', sortOrder: 20 },
+  { id: 21, name: 'pepparrot', sortOrder: 21 },
 ];
 
 const lists = [
@@ -41,20 +42,11 @@ app.get('/api/lists/:id', (req, res) => {
   res.send({ express: list });
 });
 
-app.get('/api/articleByName/:name?', (req, res) => {
-  const { name } = req.params;
-  const filteredList = articles.filter(article => {
-    return article.name.startsWith(name);
-  });
-
-  res.send({
-    express: filteredList,
-  });
-});
-
 app.get('/api/articles/', (req, res) => {
   res.send({
-    articles: articles,
+    articles: articles.map(article => {
+      return article.name;
+    }),
   });
 });
 
@@ -90,8 +82,22 @@ app.post('/api/article', (req, res) => {
 
 app.post('/api/list/:listId/article', (req, res) => {
   const { listId } = req.params;
-  const article = getArticle(req.body.articleId);
+  let article = getArticleByName(req.body.article);
   list = getList(parseInt(listId));
+
+  if (!article) {
+    const articleWithmaxId = articles.sort((a, b) => b.id - a.id)[0];
+    const articleWithmaxSortOrder = articles.sort(
+      (a, b) => b.sortOrder - a.sortOrder
+    )[0];
+
+    article = {
+      id: articleWithmaxId.id + 1,
+      name: req.body.article,
+      sortOrder: articleWithmaxSortOrder.sortOrder + 1,
+    };
+    articles.push(article);
+  }
 
   if (list.articles.filter(a => a.id === article.id).length === 0) {
     list.articles.push(article);
@@ -100,9 +106,27 @@ app.post('/api/list/:listId/article', (req, res) => {
   res.send({ listId: req.body.listId });
 });
 
-const getArticle = articleId => {
+app.delete('/api/list/:listId/article', (req, res) => {
+  const { listId } = req.params;
+  let article = getArticleById(req.body.article);
+  list = getList(parseInt(listId));
+
+  list.articles = list.articles.filter(a => {
+    return a.id != req.body.article;
+  });
+
+  res.send({ listId: req.body.listId });
+});
+
+const getArticleById = articleId => {
   const article = articles.find(article => {
     return article.id === articleId;
+  });
+  return article;
+};
+const getArticleByName = articleName => {
+  const article = articles.find(article => {
+    return article.name === articleName;
   });
   return article;
 };

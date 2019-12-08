@@ -1,10 +1,3 @@
-export async function getArticleByNameDb(articleName) {
-  const response = await fetch('/api/articleByName/' + articleName);
-  const body = await response.json();
-  if (response.status !== 200) throw Error(body.message);
-  return body;
-}
-
 export async function getListDb(listId) {
   const response = await fetch('/api/lists/' + listId);
   const body = await response.json();
@@ -19,7 +12,7 @@ export async function getArticlesDb() {
   return body;
 }
 
-export async function AddArticleDb(newArticleName) {
+export async function addArticleDb(newArticleName) {
   const response = await fetch('/api/article', {
     method: 'POST',
     headers: {
@@ -34,14 +27,30 @@ export async function AddArticleDb(newArticleName) {
   return body;
 }
 
-export async function addToListDb(selectedArticleId, listId) {
+export async function addToListDb(selectedArticleName, listId) {
   const response = await fetch(`/api/list/${listId}/article`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      articleId: selectedArticleId,
+      article: selectedArticleName,
+      listId: listId,
+    }),
+  });
+  const body = await response.json();
+  if (response.status !== 200) throw Error(body.message);
+  return body;
+}
+
+export async function deleteFromList(articleId, listId) {
+  const response = await fetch(`/api/list/${listId}/article`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      article: articleId,
       listId: listId,
     }),
   });

@@ -9,8 +9,10 @@ export default class List extends Component {
     super(props);
 
     this.state = {
+      mouseOverArticle: '',
       ...props,
     };
+    console.log('listId', props);
   }
 
   dragStart = e => {
@@ -28,6 +30,7 @@ export default class List extends Component {
     var to = Number(this.over.dataset.id);
 
     if (from < to) to--;
+
     articles.splice(to, 0, articles.splice(from, 1)[0]);
     const updatedArticleId = articles[to].id;
     const sortOrderBefore = articles[to].sortOrder;
@@ -52,21 +55,43 @@ export default class List extends Component {
     this.over = e.target;
     e.target.parentNode.insertBefore(placeholder, e.target);
   };
+
+  setMouseOverArticle = id => {
+    this.setState({ mouseOverArticle: id });
+  };
+  clearMouseOverArticle = () => {
+    this.setState({ mouseOverArticle: -1 });
+  };
+
   render() {
-    const { articles } = this.props;
+    const { articles, deleteArticleFromList } = this.props;
+    const { mouseOverArticle } = this.state;
+
     const listItems = articles.map((item, i) => {
       return (
         <li
           data-id={i}
-          key={i}
+          key={item.id}
           draggable="true"
           onDragEnd={this.dragEnd}
           onDragStart={this.dragStart}
+          onMouseOver={() => this.setMouseOverArticle(item.id)}
         >
-          {item.name}
+          <span>{item.name}</span>
+
+          {mouseOverArticle === item.id ? (
+            <span onClick={() => deleteArticleFromList(item.id)}>(X)</span>
+          ) : (
+            ''
+          )}
         </li>
       );
     });
-    return <ul onDragOver={this.dragOver}>{listItems}</ul>;
+    return (
+      <div className="shoppinglist">
+        {' '}
+        <ul onDragOver={this.dragOver}>{listItems}</ul>
+      </div>
+    );
   }
 }
