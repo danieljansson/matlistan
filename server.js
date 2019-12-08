@@ -117,6 +117,18 @@ app.post('/api/list/:listId/article', (req, res) => {
   res.send({ listId: req.body.listId });
 });
 
+app.delete('/api/list/:listId/article', (req, res) => {
+  const { listId } = req.params;
+  let article = getArticleById(req.body.article);
+  list = getList(parseInt(listId));
+
+  list.articles = list.articles.filter(a => {
+    return a.id != req.body.article;
+  });
+
+  res.send({ listId: req.body.listId });
+});
+
 const getArticleById = articleId => {
   const article = articles.find(article => {
     return article.id === articleId;

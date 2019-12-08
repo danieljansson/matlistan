@@ -50,6 +50,22 @@ export async function addToListDb(selectedArticleName, listId) {
   return body;
 }
 
+export async function deleteFromList(articleId, listId) {
+  const response = await fetch(`/api/list/${listId}/article`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      article: articleId,
+      listId: listId,
+    }),
+  });
+  const body = await response.json();
+  if (response.status !== 200) throw Error(body.message);
+  return body;
+}
+
 export async function updateListOrder(listId, articles) {
   const response = await fetch(`/api/list/${listId}/articles`, {
     method: 'PUT',

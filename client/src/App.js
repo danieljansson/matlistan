@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import queryString from 'query-string';
-import { getListDb } from './listService';
+import { getListDb, deleteFromList } from './listService';
 import AddArticle from './Components/AddArticle';
 import List from './Components/List';
 
@@ -13,14 +13,23 @@ class App extends Component {
     };
   }
   componentDidMount() {
-    const parsed = queryString.parse(window.location.search);
-    this.setState({ listId: parsed.listId });
-    this.getList(parsed.listId);
+    const { listId } = queryString.parse(window.location.search);
+    this.setState({ listId: listId });
+    this.getList(listId);
   }
   getList = listId => {
     getListDb(listId)
       .then(res => {
         this.setState({ listArticles: res.express.articles });
+      })
+      .catch(err => console.log(err));
+  };
+
+  deleteArticleFromList = articleid => {
+    const { listId } = this.state;
+    deleteFromList(articleid, listId)
+      .then(res => {
+        this.getList(res.listId);
       })
       .catch(err => console.log(err));
   };
@@ -64,6 +73,7 @@ class App extends Component {
         <List
           articles={listArticles.sort((a, b) => a.sortOrder - b.sortOrder)}
           updateListOrder={this.updateListOrder}
+          deleteArticleFromList={this.deleteArticleFromList}
         />
       </div>
     );
