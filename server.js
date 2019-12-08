@@ -42,17 +42,6 @@ app.get('/api/lists/:id', (req, res) => {
   res.send({ express: list });
 });
 
-app.get('/api/articleByName/:name?', (req, res) => {
-  const { name } = req.params;
-  const filteredList = articles.filter(article => {
-    return article.name.startsWith(name);
-  });
-
-  res.send({
-    express: filteredList,
-  });
-});
-
 app.get('/api/articles/', (req, res) => {
   res.send({
     articles: articles.map(article => {

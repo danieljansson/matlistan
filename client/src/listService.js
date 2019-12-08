@@ -1,10 +1,3 @@
-export async function getArticleByNameDb(articleName) {
-  const response = await fetch('/api/articleByName/' + articleName);
-  const body = await response.json();
-  if (response.status !== 200) throw Error(body.message);
-  return body;
-}
-
 export async function getListDb(listId) {
   const response = await fetch('/api/lists/' + listId);
   const body = await response.json();
