@@ -1,6 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import './autocomplete.css';
-import { DELETE, BACKSPACE, ENTER, UP, DOWN } from './../utils/keycodeMapper';
+import {
+  DELETE,
+  BACKSPACE,
+  ENTER,
+  UP,
+  DOWN,
+  ARROW_FORWARD,
+  ARROW_BACK,
+} from './../utils/keycodeMapper';
 
 class Autocomplete extends Component {
   constructor(props) {
@@ -29,7 +37,7 @@ class Autocomplete extends Component {
 
   // Event fired when the input value is changed
   onChange = e => {
-    const { suggestions } = this.props;
+    const { suggestions, selectArticle } = this.props;
 
     let userInsertedInput = e.currentTarget.value;
 
@@ -59,6 +67,7 @@ class Autocomplete extends Component {
     if (firstSuggestion !== userInsertedInput) {
       startPos = userInsertedInput.length;
     }
+
     // Update the user input and filtered suggestions, reset the active
     // suggestion and make sure the suggestions are shown
     this.setState(
@@ -106,6 +115,10 @@ class Autocomplete extends Component {
       startPos,
     } = this.state;
     const { selectArticle } = this.props;
+
+    if (e.keyCode === ARROW_FORWARD || e.keyCode === ARROW_BACK) {
+      this.removeSelection();
+    }
 
     if (e.keyCode === DELETE || e.keyCode === BACKSPACE) {
       if (startPos > 0) {
@@ -157,11 +170,18 @@ class Autocomplete extends Component {
     }
   };
 
+  removeSelection = () => {
+    this.setState({
+      startPos: 0,
+    });
+  };
+
   render() {
     const {
       onChange,
       onClick,
       onKeyDown,
+      removeSelection,
       state: {
         activeSuggestion,
         filteredSuggestions,
@@ -195,13 +215,6 @@ class Autocomplete extends Component {
           </ul>
         );
       }
-      // else {
-      //   suggestionsListComponent = (
-      //     <div className="no-suggestions">
-      //       <em>No suggestions, you're on your own!</em>
-      //     </div>
-      //   );
-      // }
     }
 
     return (
@@ -212,6 +225,7 @@ class Autocomplete extends Component {
           onKeyDown={onKeyDown}
           value={userInput}
           ref={this.inputRef}
+          onClick={removeSelection}
         />
         {suggestionsListComponent}
       </Fragment>
